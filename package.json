@@ -4,9 +4,8 @@
   "description": "tarea apps",
   "main": "index.js",
   "scripts": {
-  "test": "node test.js"
+    "test": "node test.js"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LilHoneyBunny/mi-app-node.git"
@@ -18,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/LilHoneyBunny/mi-app-node/issues"
   },
-  "homepage": "https://github.com/LilHoneyBunny/mi-app-node#readme"
+  "homepage": "https://github.com/LilHoneyBunny/mi-app-node#readme",
+  "dependencies": {
+    "express": "4.18.2"
+  }
 }

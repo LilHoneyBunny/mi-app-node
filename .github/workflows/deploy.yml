@@ -1,0 +1,37 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deployserver.pem
+          chmod 600 ~/.ssh/deployserver.pem
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deployserver.pem $SSH_USER@$SSH_HOST "echo Conexión exitosa"
+
+      - name: Send project to server
+        run: |
+          rsync -avz -e "ssh -i ~/.ssh/deployserver.pem" ./ $SSH_USER@$SSH_HOST:/home/$SSH_USER/mi-app-node/
+
+      - name: Build and run Docker on server
+        run: |
+          ssh -i ~/.ssh/deployserver.pem $SSH_USER@$SSH_HOST "
+            cd mi-app-node &&
+            docker build -t mi-app-node . &&
+            docker rm -f mi-app-node || true &&
+            docker run -d --name mi-app-node -p 80:3000 mi-app-node
+          "
